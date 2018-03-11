@@ -4,6 +4,7 @@ import "../node_modules/zeppelin-solidity/contracts/token/ERC20/MintableToken.so
 import "../node_modules/zeppelin-solidity/contracts/token/ERC20/ERC20.sol";
 
 contract OptionToken is MintableToken {
+    address owner;
     string public name;
     string public symbol;
     uint8 public decimals;
@@ -13,6 +14,7 @@ contract OptionToken is MintableToken {
     uint256 public burningTime;
 
 	function OptionToken (
+        address _owner,
         string _name,
         string _symbol,
         uint8 _decimals,
@@ -22,6 +24,7 @@ contract OptionToken is MintableToken {
         uint256 _burningTime) public
     {
         require(_buyoutTime < _burningTime);
+        owner = _owner;
         name = _name;
         symbol = _symbol;
         decimals = _decimals;
@@ -46,4 +49,10 @@ contract OptionToken is MintableToken {
         balances[msg.sender] = balances[msg.sender].sub(tokenCount);
         erc.transfer(msg.sender, tokenCount);
     }
+
+    function withdraw() public {
+        require(msg.sender == owner);
+        owner.transfer(this.balance);
+    }
+
 }

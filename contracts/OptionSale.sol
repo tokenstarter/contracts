@@ -72,7 +72,7 @@ contract OptionSale {
 
     function open(string name, string symbol, uint8 decimals) public onlyFactory {
         require(address(option) == 0x0);
-        option = new OptionToken(name, symbol, decimals, address(erc20), tokenRate, buyoutTime, burningTime);
+        option = new OptionToken(startup, name, symbol, decimals, address(erc20), tokenRate, buyoutTime, burningTime);
     }
 
     function () public payable onlyWhileOpen {
@@ -93,6 +93,10 @@ contract OptionSale {
         }
 
         option.mint(msg.sender, optionCount);
+    }
+
+    function withdraw() public onlyStartup {
+        startup.transfer(this.balance);
     }
 
     function close() public onlyStartup {
